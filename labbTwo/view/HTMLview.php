@@ -10,6 +10,7 @@ class HTMLView {
 			echo '<!DOCTYPE html>
 				<html>
 					<head>
+					    <title>Laboration 2 - inloggningsmodul</title>
 						<meta charset="UTF-8" />
 						<link rel="stylesheet" href="style.css" media="screen">
 					</head>

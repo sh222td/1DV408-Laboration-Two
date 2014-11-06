@@ -36,19 +36,22 @@ class LoginController {
         //Checks if user wanted to log out with either cookies or not.
 		if($this->loginView->didUserPressLogoutButton()) {
             if ($this->loginView->checkCookie()) {
+                $this->loginView->setLoggedOutMSG();
                 $this->loginView->killEverything();
                 $loginhtml = $this->loginView->show();
                 return $this->htmlView->echoHTML($loginhtml);
             } else {
+                $this->loginView->setLoggedOutMSG();
                 $this->loginModel->killSession();
                 $loginhtml = $this->loginView->show();
                 return $this->htmlView->echoHTML($loginhtml);
             }
 		}
+
         //Checks if a session exists and returns the logged in view.
 		if ($this->loginModel->isSessionSet()) {
             $agent = $this->loginView->requireAgent();
-            if($agent=== $this->loginModel->getAgent()) {
+            if($agent === $this->loginModel->getAgent()) {
                 return $this->htmlView->echoHTML($this->loginView->loggedinView());
             } else {
                 $loginhtml = $this->loginView->show();
@@ -58,17 +61,18 @@ class LoginController {
 		}
 
         //Checks if there is a cookie and if it has been manipulated.
-		if($this->loginView->checkCookie()){
-			if ($this->loginView->checkCookieIfChanged()) {
-				$this->loginView->setcookieErrorMSG();
-				$this->loginView->killEverything();
-				$loginhtml = $this->loginView->show();
-				return $this->htmlView->echoHTML($loginhtml);
-			} else {
-			$this->loginModel->setSession();
-			return $this->htmlView->echoHTML($this->loginView->loggedinView());
+        if($this->loginView->checkCookie()){
+            if ($this->loginView->checkCookieIfChanged()) {
+                $this->loginView->setcookieErrorMSG();
+                $this->loginView->killEverything();
+                $loginhtml = $this->loginView->show();
+                return $this->htmlView->echoHTML($loginhtml);
+            } else {
+                $this->loginView->setSavedCookieMSG();
+                $this->loginModel->setSession();
+                return $this->htmlView->echoHTML($this->loginView->loggedinView());
             }
-		}
+        }
 
         //Checks if the user wanted to log in with or without cookies.
 		if($this->loginView->didUserPressLoginButton()) {
@@ -78,6 +82,8 @@ class LoginController {
 					$this->loginModel->setSession();
 					$this->loginView->createCookie();
 					$this->loginView->createCookieFile();
+                    $agent = $this->loginView->requireAgent();
+                    $this->loginModel->setAgent($agent);
 					$this->isSavedValidUser();
 				} else {
 					$this->loginModel->setSession();

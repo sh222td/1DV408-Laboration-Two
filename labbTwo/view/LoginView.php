@@ -30,8 +30,9 @@ class LoginView {
 		<h2>Ej inloggad</h2>
 		<form method='POST' Action='?login'>
 			<fieldset>
-			<p>$this->errorMessage</p>
+
 				<legend>Login - Skriv in användarnamn och lösenord</legend>
+				<p>$this->errorMessage</p>
 				<label for='UserNameID'>Användarnamn : </label>
 				<input type='text' size='20' name='".self::$username."' id='UserNameID' />
 				<label for='PasswordID'>Lösenord : </label>
@@ -80,6 +81,10 @@ class LoginView {
 	public function setSavedCookieMSG() {
 		$this->inlogmessage = "Inloggning lyckades via cookies";
 	}
+
+    public function setLoggedOutMSG() {
+        $this->errorMessage = "Du har nu loggats ut";
+    }
 	
 	public function didUserPressLoginKeeperButton() {
 		if (isset($_POST["loginKeeper"])) {
@@ -94,8 +99,8 @@ class LoginView {
 
 		if (isset($_POST["loginKeeper"])) {
 
-			setcookie('username', $_POST[self::$username], time()+40);
-			setcookie('password', $hash, time()+40);
+			setcookie('username', $_POST[self::$username], time()+60);
+			setcookie('password', $hash, time()+60);
 		}
 	}
 
@@ -122,7 +127,7 @@ class LoginView {
 	}
 	
 	public function createCookieFile() {
-		$cookieTime = time()+40;
+		$cookieTime = time()+60;
 		file_put_contents($this->fileName, $cookieTime);
 	}
 	
@@ -136,8 +141,8 @@ class LoginView {
         $pass = $this->loginModel->loginPassword;
         $hash = password_hash($pass, PASSWORD_BCRYPT);
 
-		setcookie('username', $_COOKIE['username'], time()-40);
-		setcookie('password', $hash, time()-40);
+		setcookie('username', $_COOKIE['username'], time()-60);
+		setcookie('password', $hash, time()-60);
 		unset($_SESSION['login']);
 	}
 
