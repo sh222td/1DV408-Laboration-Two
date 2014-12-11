@@ -12,6 +12,7 @@ class LoginController {
 	private $htmlView;
 	private $loginView;
 	private $errorMessage;
+    private $userInput;
 	
 	public function __construct(){
 		$this->htmlView = new HTMLView();
@@ -25,12 +26,18 @@ class LoginController {
         $agent = $this->loginView->requireAgent();
 		$this->loginModel->checkLogin($this->username, $this->password, $agent);
 		$this->errorMessageHandler();
+        $this->previousUserInputMessageHandler();
 	}
 
 	public function errorMessageHandler() {
 		$this->errorMessage = $this->loginModel->getErrorMessage();
 		$this->loginView->setErrorMessage($this->errorMessage);
 	}
+
+    public function previousUserInputMessageHandler() {
+        $this->userInput = $this->loginModel->rememberUserInput();
+        $this->loginView->setPreviousUserInput($this->userInput);
+    }
 
 	public function startController () {
         //Checks if user wanted to log out with either cookies or not.

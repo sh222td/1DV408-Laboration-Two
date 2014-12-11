@@ -6,7 +6,6 @@ class LoginView {
 
     //Declare variables.
 	private $loginModel;
-	private $model;
 	private static $username = "UserName";
 	private static $password = "Password";
 	private $errorMessage;
@@ -14,6 +13,8 @@ class LoginView {
     private $pass;
     private $cookieTextFile;
     private $fileName = "cookieTime.txt";
+    private $userInput;
+
 
 	public function __construct() {
 		$this->loginModel = new LoginModel();
@@ -23,6 +24,10 @@ class LoginView {
 	public function setErrorMessage($errorMessage) {
 		$this->errorMessage = $errorMessage;
 	}
+
+    public function setPreviousUserInput($userInput) {
+        $this->userInput = $userInput;
+    }
 
     //Start page.
 	public function show() {
@@ -34,7 +39,7 @@ class LoginView {
 				<legend>Login - Skriv in användarnamn och lösenord</legend>
 				<p>$this->errorMessage</p>
 				<label for='UserNameID'>Användarnamn : </label>
-				<input type='text' size='20' name='".self::$username."' id='UserNameID' />
+				<input type='text' size='20' name='".self::$username."' value='".$this->userInput ."' id='UserNameID' />
 				<label for='PasswordID'>Lösenord : </label>
 				<input type='password' size='20' name='".self::$password."' id='PasswordID' />
 				<label for='LoginKeeper'>Håll mig inloggad : </label>
@@ -62,6 +67,8 @@ class LoginView {
 			return true;
 		}
 	}
+
+
 	
 	public function getUserName(){
 		return  $_POST[self::$username];
@@ -99,8 +106,8 @@ class LoginView {
 
 		if (isset($_POST["loginKeeper"])) {
 
-			setcookie('username', $_POST[self::$username], time()+60);
-			setcookie('password', $hash, time()+60);
+			setcookie('username', $_POST[self::$username], time()+600);
+			setcookie('password', $hash, time()+600);
 		}
 	}
 
@@ -127,7 +134,7 @@ class LoginView {
 	}
 	
 	public function createCookieFile() {
-		$cookieTime = time()+60;
+		$cookieTime = time()+600;
 		file_put_contents($this->fileName, $cookieTime);
 	}
 	
@@ -141,8 +148,8 @@ class LoginView {
         $pass = $this->loginModel->loginPassword;
         $hash = password_hash($pass, PASSWORD_BCRYPT);
 
-		setcookie('username', $_COOKIE['username'], time()-60);
-		setcookie('password', $hash, time()-60);
+		setcookie('username', $_COOKIE['username'], time()-600);
+		setcookie('password', $hash, time()-600);
 		unset($_SESSION['login']);
 	}
 

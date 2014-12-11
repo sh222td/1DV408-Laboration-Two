@@ -8,6 +8,7 @@ class LoginModel {
 	private $username;
 	private $password;
 	private $errorMessage = "";
+    private $previousUserInput;
 	
 	public function setSession() {
 		$_SESSION['login'] = true;
@@ -30,6 +31,10 @@ class LoginModel {
 		return false;
 	}
 
+    public function rememberUserInput() {
+        return $this->previousUserInput;
+    }
+
 	public function checkLogin($username, $password, $agent){
 		$this->username = $username;
 		$this->password = $password;
@@ -45,17 +50,20 @@ class LoginModel {
 		 }
 		 //Checks if user has written password or not.
 		 else if ($password == "") {
-		 	$this->errorMessage = "Fyll i lösenord";
+		 	 $this->errorMessage = "Fyll i lösenord";
+             $this->previousUserInput = $this->username;
 			 return true;
 		 }
 		 //Checks if user has written wrong password.
 		 else if ($username == $this->loginName && $password != $this->loginPassword) {
-		 	$this->errorMessage = "Felaktigt användarnamn och/eller lösenord";
+		 	 $this->errorMessage = "Felaktigt användarnamn och/eller lösenord";
+             $this->previousUserInput = $this->username;
 			 return true;
 		 }
 		 //Checks if user has written wrong username.
 		 else if ($username != $this->loginName && $password == $this->loginPassword) {
 		 	$this->errorMessage = "Felaktigt användarnamn och/eller lösenord";
+             $this->previousUserInput = $this->username;
 			 return true;
 		 }
 		 //Checks if user has written the correct input.
@@ -78,6 +86,10 @@ class LoginModel {
 	public function getErrorMessage() {
 		return $this->errorMessage;
 	}
+
+    public function getPreviousUserInputMessage() {
+        return $this->previousUserInput;
+    }
 
     public function killSession() {
         unset($_SESSION['login']);
